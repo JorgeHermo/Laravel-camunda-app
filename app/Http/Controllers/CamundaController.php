@@ -7,28 +7,30 @@ use Illuminate\Http\Request;
 
 class CamundaController extends Controller
 {
-    public function getTasks()
+    public function getTasks($assignee = null)
     {
         $client = new Client([
             'base_uri' => 'http://localhost:8080/engine-rest/',
-            'headers' =>[
-                'Authorization' => 'Basic' . base64_encode('demo:demo'),
+            'headers' => [
+                'Authorization' => 'Basic ' . base64_encode('demo:demo'),
             ],
         ]);
+
+        $queryParams = [];
+
+        if (!is_null($assignee)) {
+            $queryParams['assignee'] = $assignee;
+        }
 
         $response = $client->get('task', [
-            'query' => [
-                'assignee' => 'kermit',
-                'sortBy' => 'dueDate',
-                'sortOrder' => 'asc',
-            ],
+            'query' => $queryParams,
         ]);
 
-        if($response->getStatusCode()=== 200) {
-            $task = json_decode($response->getBody(), true);
-            return view ('task', ['task' => $tasks]);
+        if ($response->getStatusCode() === 200) {
+            $tasks = json_decode($response->getBody(), true);
+            return view('tasks.tasks', ['tasks' => $tasks]);
         } else {
-            return view ('error', ['message' => 'Error retrieving tasks']);
+            return view('error', ['message' => 'Error retrieving tasks']);
         }
     }
 }

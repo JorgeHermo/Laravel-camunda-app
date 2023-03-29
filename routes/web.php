@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\CamundaController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -23,4 +23,8 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 // TASK ROUTES
 
-Route::get('/tasks', 'CamundaController@getTasks');
+Route::get('tasks/tasks', [CamundaController::class, 'getTasks']);
+Route::get('/tasks/{assignee?}', [CamundaController::class, 'getTasks']);
+
+// USER ROUTES
+Route::get('/users/{user}', [UserController::class, 'show']);
